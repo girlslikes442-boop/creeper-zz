@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#090909">
+<title>Creeper ZZ</title>
+<style>
+:root{--bg:#090909;--panel:#151515;--red:#ff3038;--muted:#9b9b9b;--white:#f5f5f5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#271014 0,#090909 42%);color:var(--white);font-family:Arial,sans-serif}
+header{padding:26px 20px 18px;border-bottom:1px solid #2b1719}
+.logo{font-size:29px;font-weight:900;letter-spacing:2px}.logo span{color:var(--red)}
+.tag{font-size:10px;letter-spacing:3px;color:#aaa;margin-top:6px}
+main{padding:18px;max-width:650px;margin:auto}
+.hero{background:linear-gradient(135deg,#281013,#141414 65%);border:1px solid #552126;border-radius:18px;padding:20px;margin-bottom:18px}
+.hero small{color:#ff8b90;letter-spacing:2px}.hero h1{font-size:27px;margin:8px 0}.hero p{color:#bbb;font-size:13px;line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--panel);border:1px solid #292929;border-radius:15px;padding:16px;min-height:116px}
+.card b{display:block;margin:9px 0 5px}.ico{font-size:23px;color:var(--red)}.muted{color:var(--muted);font-size:12px}
+.section{background:var(--panel);border:1px solid #292929;border-radius:15px;padding:17px;margin-top:15px}
+h2{font-size:17px;margin:0 0 14px}
+label{display:flex;justify-content:space-between;font-size:13px;margin:13px 0 7px}
+input[type=range]{width:100%;accent-color:var(--red)}
+select,button{background:#242424;color:white;border:1px solid #454545;border-radius:10px;padding:11px;font-size:14px}
+button{background:var(--red);border:0;font-weight:bold;width:100%;margin-top:10px}
+button.secondary{background:#292929;border:1px solid #454545}
+.row{display:flex;gap:9px}.row>*{flex:1}
+.targetArea{height:190px;border:1px dashed #633036;border-radius:12px;background:radial-gradient(circle,#291316,#101010);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.target{width:64px;height:64px;border-radius:50%;border:5px solid #ff777d;background:radial-gradient(circle,#fff 0 8%,#ff3038 10% 28%,#fff 30% 38%,#ff3038 40%);box-shadow:0 0 24px #ff303866;cursor:pointer;touch-action:manipulation}
+.stats{display:flex;justify-content:space-around;text-align:center;margin:12px 0}.stats strong{display:block;font-size:23px;color:#ff555c}
+nav{position:sticky;bottom:0;background:#0c0c0cf2;border-top:1px solid #292929;display:flex;justify-content:space-around;padding:12px 4px;font-size:11px;color:#bbb}
+nav a{color:inherit;text-decoration:none}
+footer{text-align:center;color:#666;font-size:10px;padding:18px}
+</style>
+</head>
+<body>
+<header><div class="logo">CREEPER <span>ZZ</span></div><div class="tag">GAMING PRACTICE TOOL</div></header>
+<main>
+ <section class="hero"><small>WELCOME PLAYER</small><h1>LEVEL UP YOUR AIM.</h1><p>Practice your reflexes, test sensitivity values and track your training progress.</p></section>
+ <div class="grid">
+  <div class="card"><div class="ico">◎</div><b>Aim Practice</b><div class="muted">Train your tapping reflex</div></div>
+  <div class="card"><div class="ico">⌁</div><b>Sensitivity</b><div class="muted">Build your own settings</div></div>
+  <div class="card"><div class="ico">✦</div><b>Headshot Setup</b><div class="muted">Personal settings guide</div></div>
+  <div class="card"><div class="ico">▥</div><b>Training Stats</b><div class="muted">Track your practice score</div></div>
+ </div>
+
+ <section class="section" id="sensitivity">
+  <h2>⚙ Sensitivity Lab</h2>
+  <div class="row"><select id="preset" onchange="applyPreset()"><option value="custom">Custom preset</option><option value="onetap">One Tap Starter</option><option value="rush">Rush Starter</option><option value="balanced">Balanced Starter</option></select><button style="margin:0" onclick="copySettings()">Copy</button></div>
+  <div id="sliders"></div>
+  <p class="muted">Starter values only. Tune them in training mode for your phone and play style.</p>
+  <div class="row"><div><label>Fire button size <b id="fireVal">50%</b></label><input id="fire" type="range" min="30" max="70" value="50" oninput="fireVal.textContent=this.value+'%'"></div></div>
+  <label>Aim precision</label><select id="aim"><option>Default</option><option>Precise on Scope</option><option>Full Control</option></select>
+ </section>
+
+ <section class="section" id="practice">
+  <h2>🎯 Aim Practice</h2>
+  <div class="stats"><div><strong id="hits">0</strong><span class="muted">HITS</span></div><div><strong id="tries">0</strong><span class="muted">TAPS</span></div><div><strong id="accuracy">0%</strong><span class="muted">HIT RATE</span></div></div>
+  <div class="targetArea" id="arena"><button class="target" aria-label="Practice target" onclick="hitTarget()" style="width:64px;height:64px;padding:0;margin:0;border-radius:50%"></button></div>
+  <div class="row"><button onclick="startPractice()">Start / Reset</button><button class="secondary" onclick="stopPractice()">Stop</button></div>
+  <p class="muted" id="practiceMsg">Press Start, then tap the target as quickly as you can.</p>
+ </section>
+
+ <section class="section" id="guide"><h2>✦ Headshot Practice Guide</h2>
+  <p class="muted">• Keep your crosshair around head height.<br>• Use short, controlled upward drags.<br>• Try a few sensitivity values at a time.<br>• Practice for 10 minutes and take breaks.</p>
+ </section>
+</main>
+<nav><a href="#">⌂ HOME</a><a href="#sensitivity">⚙ SENSI</a><a href="#practice">◎ PRACTICE</a><a href="#guide">✦ GUIDE</a></nav>
+<footer>CREEPER ZZ • VERSION 1.0<br>Independent practice tool. Not affiliated with Garena Free Fire.</footer>
+<script>
+const names=['General','Red Dot','2X Scope','4X Scope','Sniper Scope','Free Look'];
+let values=[185,180,170,160,90,150],hits=0,tries=0,running=false;
+const sliderBox=document.getElementById('sliders');
+function drawSliders(){sliderBox.innerHTML='';names.forEach((n,i)=>{let wrap=document.createElement('div');wrap.innerHTML=`<label>${n}<b id="v${i}">${values[i]}</b></label><input type="range" min="0" max="200" value="${values[i]}" oninput="values[${i}]=+this.value;document.getElementById('v${i}').textContent=this.value">`;sliderBox.appendChild(wrap)})}
+function applyPreset(){let p=document.getElementById('preset').value;let presets={onetap:[185,180,170,160,90,150],rush:[195,190,180,170,100,160],balanced:[170,165,155,145,80,135]};if(presets[p]){values=presets[p];drawSliders()}}
+function copySettings(){let t='CREEPER ZZ SETTINGS\n'+names.map((n,i)=>n+': '+values[i]).join('\n')+'\nFire button: '+document.getElementById('fire').value+'%\nAim: '+document.getElementById('aim').value;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>alert('Settings copied!')).catch(()=>alert(t))}else alert(t)}
+function updateStats(){document.getElementById('hits').textContent=hits;document.getElementById('tries').textContent=tries;document.getElementById('accuracy').textContent=tries?Math.round(hits/tries*100)+'%':'0%'}
+function startPractice(){hits=0;tries=0;running=true;updateStats();document.getElementById('practiceMsg').textContent='Training started! Tap the target.';moveTarget()}
+function stopPractice(){running=false;document.getElementById('practiceMsg').textContent='Practice paused. Great work!'}
+function hitTarget(){if(!running)return;hits++;tries++;updateStats();moveTarget()}
+function moveTarget(){if(!running)return;let a=document.getElementById('arena'),b=a.querySelector('button'),maxX=a.clientWidth-74,maxY=a.clientHeight-74;b.style.position='absolute';b.style.left=Math.max(5,Math.random()*maxX)+'px';b.style.top=Math.max(5,Math.random()*maxY)+'px'}
+drawSliders();
+</script>
+</body>
+</html>
